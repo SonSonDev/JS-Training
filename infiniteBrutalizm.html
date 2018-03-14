@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <link rel="stylesheet" href="css/reset.css">
+   <style media="screen">
+      @font-face {
+         font-family: "Aileronsaaa";
+         src: url("fonts/Ailerons-Typeface.otf");
+      }
+
+      .back {
+         position: fixed;
+         left: 10px;
+         top: 10px;
+         color: red;
+         font-family: "Aileronsaaa";
+
+      }
+
+      .buttonContainer {
+         position: fixed;
+         right: 10px;
+         top: 10px;
+         z-index: 3;
+      }
+
+      .container {
+         padding: 5vh 0;
+         height: 90vh;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-around;
+         overflow: hidden;
+      }
+
+      .bigContainer {
+         display: flex;
+      }
+
+      .bigContainerR {
+         display: flex;
+         flex-direction: row-reverse;
+      }
+
+      .halfPart {
+         display: flex;
+         justify-content: space-around;
+      }
+
+      .halfPart p {
+         font-family: "Aileronsaaa";
+         font-size: 5rem;
+         margin: 0 20px;
+         text-align: center;
+         white-space: nowrap;
+      }
+
+      .pawa {
+         z-index: -1;
+         color: orange;
+         -webkit-animation: pawa 1s infinite;
+      }
+
+      @keyframes pawa {
+         0% {
+            transform: scaleX(1);
+         }
+         50% {
+            transform: scaleX(10);
+         }
+         100% {
+            transform: scaleX(1);
+         }
+      }
+
+      .powa {
+         color: blue;
+         -webkit-animation: powa 0.5s infinite;
+      }
+
+      @keyframes powa {
+         0% {
+            transform: scaleY(0.5) rotateY(0deg);
+         }
+         50% {
+            transform: scaleY(2) rotateY(360deg);
+         }
+         100% {
+            transform: scaleY(0.5) rotateY(720deg);
+         }
+      }
+
+      .puwa {
+         color: green;
+         -webkit-animation: puwa 0.5s infinite;
+      }
+
+      @keyframes puwa {
+         0% {
+            transform: skewX(-50deg);
+         }
+         50% {
+            transform: skewX(50deg);
+         }
+         100% {
+            transform: skewX(-50deg);
+         }
+      }
+
+      .poww {
+         color: tomato;
+         -webkit-animation: poww 0.5s infinite;
+      }
+
+      @keyframes poww {
+         0% {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+         }
+         100% {
+            transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+         }
+      }
+
+      .poww {
+         color: tomato;
+         -webkit-animation: poww 0.5s infinite;
+      }
+
+      @keyframes poww {
+         0% {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+         }
+         50% {
+            transform: rotateX(-180deg) rotateY(360deg) rotateZ(900deg) scale(0.5);
+         }
+         100% {
+            transform: rotateX(-360deg) rotateY(720deg) rotateZ(1800deg) scale(1);
+         }
+      }
+
+      .pioupiou {
+         color: gold;
+         -webkit-animation: pioupiou 0.5s infinite;
+      }
+
+      @keyframes pioupiou {
+         0% {
+            transform: scale(1);
+         }
+         50% {
+            transform: scale(0.1);
+         }
+         100% {
+            transform: scale(1);
+         }
+      }
+
+      .piwi {
+         color: rebeccapurple;
+         -webkit-animation: piwi 1s infinite;
+      }
+
+      @keyframes piwi {
+         0% {
+            transform: rotateZ(0deg) rotateY(0deg) rotateX(0deg);
+         }
+         20% {
+            transform: rotateZ(90deg) rotateY(0deg) rotateX(0deg);
+         }
+         40% {
+            transform: rotateZ(90deg) rotateY(360deg) rotateX(0deg);
+         }
+         60% {
+            transform: rotateZ(270deg) rotateY(360deg) rotateX(360deg);
+         }
+         80% {
+            transform: rotateZ(360deg) rotateY(360deg) rotateX(360deg);
+         }
+         100% {
+            transform: rotateZ(0deg) rotateY(0deg) rotateX(0deg);
+         }
+      }
+
+      .pewe {
+         color: red;
+         -webkit-animation: pewe 0.5s infinite;
+      }
+
+      @keyframes pewe {
+         0% {
+            transform: scaleX(0.5) scaleY(1.5) rotateY(0);
+         }
+         50% {
+            transform: scaleX(1.5) scaleY(0.5) rotateY(180deg);
+         }
+         100% {
+            transform: scaleX(0.5) scaleY(1.5) rotateY(0);
+         }
+      }
+
+      .pawn {
+         color: teal;
+         -webkit-animation: pawn 0.5s infinite;
+      }
+
+      @keyframes pawn {
+         0% {
+            transform: scaleX(0.1);
+         }
+         50% {
+            transform: scaleX(1.4);
+         }
+         100% {
+            transform: scaleX(0.1);
+         }
+      }
+
+      .paww {
+         color: aquamarine;
+         -webkit-animation: paww 0.5s infinite;
+      }
+
+      @keyframes paww {
+         0% {
+            transform: scaleX(0.5) scaleY(3);
+         }
+         50% {
+            transform: scaleX(1.5) scaleY(0.5);
+         }
+         100% {
+            transform: scaleX(0.5) scaleY(3);
+         }
+      }
+
+      .pooo {
+         color: pink;
+
+         -webkit-animation: pooo 1.5s infinite;
+      }
+
+      @keyframes pooo {
+         0% {
+            transform: skewY(-40deg) rotateZ(0);
+         }
+         50% {
+            transform: skewY(40deg) rotateZ(360deg);
+         }
+         100% {
+            transform: skewY(-40deg) rotateZ(0);
+         }
+      }
+   </style>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <meta charset="utf-8">
+   <title>infinity</title>
+</head>
+
+<body>
+   <div class="back"><a href="index.html">Retour</a></div>
+   <div class="buttonContainer">
+      <button>Yes</button>
+      <button>No</button>
+   </div>
+   <section class="container"></section>
+
+   <script type="text/javascript">
+      var tab = [{
+            name: "Serfion",
+            class: "pioupiou"
+         },
+         {
+            name: "M00NB0Y",
+            class: "powa"
+         },
+         {
+            name: "Kether",
+            class: "piwi"
+         },
+         {
+            name: "RED",
+            class: "pewe"
+         },
+         {
+            name: "Destiny",
+            class: "pawn"
+         },
+         {
+            name: "LeKawa",
+            class: "puwa"
+         },
+         {
+            name: "Ynohtna",
+            class: "paww"
+         },
+         {
+            name: "SonSon",
+            class: "pawa"
+         },
+         {
+            name: "Théodore",
+            class: "poww"
+         },
+         {
+            name: "Makura",
+            class: "pooo"
+         },
+      ]
+      var container = document.querySelector('.container');
+
+      var randomizer = function(tab) {
+         var randomizedTab = [];
+         while (tab.length > 0) {
+            var randomN = Math.floor(Math.random() * tab.length);
+            randomizedTab.push(tab[randomN]);
+            tab.splice(randomN, 1);
+         }
+         return randomizedTab;
+      }
+
+      function NewScroll(keyframe, count) {
+         this.value = 0;
+         this.create = function() {
+            this.div = document.createElement('DIV');
+            if (count % 2 === 0) {
+               this.div.classList.add('bigContainer');
+            } else {
+               this.div.classList.add('bigContainerR');
+            }
+            tab = randomizer(tab);
+            for (var j = 0; j < 2; j++) {
+               var half = document.createElement('DIV')
+               half.classList.add('halfPart');
+               for (var k = 0; k < tab.length; k++) {
+                  var newName = document.createElement('P');
+                  newName.textContent = tab[k].name;
+                  half.appendChild(newName);
+                  if (keyframe === "yes") {
+                     newName.classList.add(tab[k].class);
+                  }
+               }
+               this.div.appendChild(half);
+            }
+            container.appendChild(this.div)
+            this.size = half.offsetWidth;
+         }
+         if (count % 2 === 0) {
+            this.animation = function() {
+               if (this.value > this.size) {
+                  this.value = 1;
+               } else {
+                  this.value += 1;
+               }
+               this.div.style.transform = "translateX(-" + this.value + "px)"
+            }
+         } else {
+            this.animation = function() {
+               if (this.value > this.size) {
+                  this.value = 1;
+               } else {
+                  this.value += 1;
+               }
+               this.div.style.transform = "translateX(" + this.value + "px)"
+            }
+         }
+      }
+
+
+      var init = function(keyframe) {
+         container.innerHTML = "";
+         var count = 0;
+         for (var i = 0; i < 6; i++) {
+            let Scroll = new NewScroll(keyframe, count);
+            Scroll.create();
+            setInterval(function() {
+               Scroll.animation();
+            }, 3 + Math.floor(Math.random()*10));
+            count++;
+         }
+      }
+
+      init("no");
+
+
+      ///
+
+      var buttons = document.querySelectorAll("button");
+
+      buttons[0].addEventListener('click', function() {
+         init("yes");
+      })
+      buttons[1].addEventListener('click', function() {
+         init("no");
+      })
+   </script>
+</body>
+
+</html>
