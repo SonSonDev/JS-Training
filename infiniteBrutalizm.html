@@ -35,13 +35,17 @@
       }
 
       .bigContainer {
+         color:rgb(167, 167, 167);
          display: flex;
       }
 
       .bigContainerR {
+         color:rgb(167, 167, 167);
          display: flex;
          flex-direction: row-reverse;
       }
+
+
 
       .halfPart {
          display: flex;
@@ -54,6 +58,17 @@
          margin: 0 20px;
          text-align: center;
          white-space: nowrap;
+         transition: 0.3s color ease;
+         cursor: default;
+      }
+
+      .bigContainer:hover,
+      .bigContainerR:hover {
+         color: rgb(231, 231, 231);
+      }
+
+      p:hover {
+         color: rgb(42, 212, 181);
       }
 
       .pawa {
@@ -320,6 +335,7 @@
       }
 
       function NewScroll(keyframe, count) {
+         this.hover = false;
          this.value = 0;
          this.create = function() {
             this.div = document.createElement('DIV');
@@ -330,6 +346,7 @@
             }
             tab = randomizer(tab);
             for (var j = 0; j < 2; j++) {
+               var forHover = this;
                var half = document.createElement('DIV')
                half.classList.add('halfPart');
                for (var k = 0; k < tab.length; k++) {
@@ -339,29 +356,40 @@
                   if (keyframe === "yes") {
                      newName.classList.add(tab[k].class);
                   }
+                  newName.addEventListener('mouseover', function() {
+                     forHover.hover = true;
+                  })
+                  newName.addEventListener('mouseout', function() {
+                     forHover.hover = false;
+                  })
                }
                this.div.appendChild(half);
             }
             container.appendChild(this.div)
             this.size = half.offsetWidth;
+
          }
          if (count % 2 === 0) {
             this.animation = function() {
-               if (this.value > this.size) {
-                  this.value = 1;
-               } else {
-                  this.value += 1;
+               if (this.hover === false) {
+                  if (this.value > this.size) {
+                     this.value = 1;
+                  } else {
+                     this.value += 1;
+                  }
+                  this.div.style.transform = "translateX(-" + this.value + "px)"
                }
-               this.div.style.transform = "translateX(-" + this.value + "px)"
             }
          } else {
             this.animation = function() {
-               if (this.value > this.size) {
-                  this.value = 1;
-               } else {
-                  this.value += 1;
+               if (this.hover === false) {
+                  if (this.value > this.size) {
+                     this.value = 1;
+                  } else {
+                     this.value += 1;
+                  }
+                  this.div.style.transform = "translateX(" + this.value + "px)"
                }
-               this.div.style.transform = "translateX(" + this.value + "px)"
             }
          }
       }
@@ -370,12 +398,13 @@
       var init = function(keyframe) {
          container.innerHTML = "";
          var count = 0;
-         for (var i = 0; i < 6; i++) {
+         for (var i = 0; i < 8; i++) {
             let Scroll = new NewScroll(keyframe, count);
             Scroll.create();
+
             setInterval(function() {
                Scroll.animation();
-            }, 3 + Math.floor(Math.random()*10));
+            }, 3 + Math.floor(Math.random() * 10));
             count++;
          }
       }

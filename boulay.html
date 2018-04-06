@@ -1,0 +1,261 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="css/reset.css">
+   <style media="screen">
+   @font-face {
+      font-family: "OpenSans";
+      src: url("fonts/OpenSans-Regular.ttf");
+   }
+   .back {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      color: red;
+   }
+
+      body {
+         font-family: "OpenSans";
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+      }
+
+      #myCanvas {
+         margin-bottom: 10px;
+         border: 1px solid black;
+      }
+   </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Document</title>
+</head>
+
+<body>
+   <div class="back"><a href="index.html">Retour</a></div>
+
+   <canvas id="myCanvas" width="1024" height="768"></canvas>
+   <div class="buttonContainer"><button class="addNew">add</button>
+   <button class="reset">reset</button>
+   <button class="deleteLast">deleteLast</button></div>
+
+
+   <script type="text/javascript">
+      const colors = ['#FF4136', '#3D9970', '#B10DC9', '#0074D9', '#2ECC40', '#7FDBFF', '#85144b', '#F012BE', '#FFDC00', '#01FF70', '#FF851B', '#39CCCC'];
+      //toujours faire ça
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var mouse = {
+         x: canvas.width/2,
+         y: canvas.height/2
+      }
+
+      var bubulles = [];
+
+      function bubulleCreation() {
+         var newBub = {
+            accelX: 0,
+            accelY: 0,
+            speedX: 0,
+            speedY: 0,
+            x: rand(0, canvas.width),
+            y: rand(0, canvas.height),
+            r: rand(10, 20),
+            color:randomColor()
+         }
+         limitCanvas(newBub)
+         bubulles.push(newBub);
+      }
+
+      bubulleCreation();
+
+      //Fonction random, renvoie un entier aléatoire entre min et max
+      function rand(min, max) {
+         return Math.floor(Math.random() * (max - min)) + min;
+      }
+
+      //Met à jour la position de la souris dans le canvas
+      window.addEventListener('mousemove', (event) => {
+         mouse.x = event.clientX - canvas.offsetLeft;
+         mouse.y = event.clientY - canvas.offsetTop;
+      });
+
+      //Fonction random renvoie une couleur aléatoire
+      function randomColor() {
+         return colors[rand(0, colors.length - 1)];
+      }
+
+      function clear() {
+         ctx.clearRect(0, 0, canvas.width, canvas.height); // xDeb, yDeb, xFin, yFin
+      }
+
+      function circle(obj) {
+         ctx.beginPath();
+         ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
+         ctx.fillStyle = obj.color;
+        //  ctx.fillStyle = "rgba(34, 82, 189, 0.14)";
+         ctx.fill();
+         // ctx.lineWidth = 1;
+         // ctx.strokeStyle = "rgba(34, 82, 189, 0.5)";
+         // ctx.stroke();
+      }
+
+      function string(obj){
+         ctx.beginPath();
+         ctx.moveTo(obj.x,obj.y);
+         var width=500/(distance(obj,mouse))
+         if (width>10) {
+            width=10
+         }
+         ctx.lineWidth = width/3;
+
+         ctx.lineTo(mouse.x,mouse.y);
+         ctx.stroke();
+      }
+
+      function display() {
+         for (var i = 0; i < bubulles.length; i++) {
+            string(bubulles[i])
+            circle(bubulles[i]);
+         }
+      }
+
+      function limitCanvas(bubulle) {
+         if (bubulle.x < bubulle.r) {
+            bubulle.x = bubulle.r
+         }
+         if (bubulle.y < bubulle.r) {
+            bubulle.y = bubulle.r
+         }
+         if (bubulle.x > canvas.width - bubulle.r) {
+            bubulle.x = canvas.width - bubulle.r
+         }
+         if (bubulle.y > canvas.height - bubulle.r) {
+            bubulle.y = canvas.height - bubulle.r
+         }
+      }
+
+      function limit(bubulle) {
+         if (bubulle.x < bubulle.r) {
+            bubulle.speedX = -bubulle.speedX
+         }
+         if (bubulle.y < bubulle.r) {
+            bubulle.speedY = -bubulle.speedY
+         }
+         if (bubulle.x > canvas.width - bubulle.r) {
+            bubulle.speedX = -bubulle.speedX
+         }
+         if (bubulle.y > canvas.height - bubulle.r) {
+            bubulle.speedY = -bubulle.speedY
+         }
+      }
+
+      function distance(item1, item2) {
+         return Math.sqrt(Math.pow((item1.x - item2.x), 2) + Math.pow((item1.y - item2.y), 2))
+      }
+
+      function updateValue(item) {
+         item.speedX += item.accelX
+         item.speedY += item.accelY
+         item.speedX = item.speedX - item.speedX * 0.0005;
+         item.speedY = item.speedY - item.speedY * 0.0005;
+         item.x += item.speedX
+         item.y += item.speedY
+      }
+
+
+      setInterval(function() {
+         clear(); //Efface le canvas
+         // canvas.style.border = '1px solid '+randomColor()
+         for (var i = 0; i < bubulles.length; i++) {
+            attract(bubulles[i])
+            updateValue(bubulles[i]);
+            limit(bubulles[i])
+            limitCanvas(bubulles[i])
+         }
+         display() //dessinnage des bubulles
+      }, 5);
+
+      function rndOne() {
+         var tab = [-1, 1];
+         return tab[Math.floor(Math.random() * tab.length)];
+      }
+
+      function attract(item) {
+         var dx = item.x - mouse.x;
+         var dy = item.y - mouse.y;
+         if (dx === 0 && dy === 0) {
+            item.accelX = 0
+            item.accelY = 0
+         } else if (distance(item, mouse) > 20) {
+            item.accelX = -dx/5000
+            item.accelY = -dy/5000
+         } else {
+            item.accelX = 0
+            item.accelY = 0
+         }
+      }
+
+      function eject(item) {
+         var dx = item.x - mouse.x;
+         var dy = item.y - mouse.y;
+         if (dx === 0 && dy === 0) {
+            dx = rndOne();
+            dy = rndOne();
+         }
+         if (distance(item, mouse) < 200) {
+            item.accelX = (500 * item.r * (dx / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)))) / Math.pow(distance(item, mouse), 2)
+            item.accelY = (500 * item.r * (dy / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)))) / Math.pow(distance(item, mouse), 2)
+         } else {
+            item.accelX = 0
+            item.accelY = 0
+         }
+      }
+
+      myCanvas.addEventListener('click', function() {
+         for (var i = 0; i < bubulles.length; i++) {
+            eject(bubulles[i]);
+            updateValue(bubulles[i]);
+            limit(bubulles[i]);
+            limitCanvas(bubulles[i]);
+         }
+         display() //dessinnage des bubulles
+      })
+
+      myCanvas.addEventListener('contextmenu', function(event) {
+         event.preventDefault();
+      })
+
+      ////BUTTON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      var addB = document.querySelector(".addNew")
+      var resetB = document.querySelector(".reset");
+      resetB.addEventListener('click', function() {
+         bubulles = [];
+         clear();
+      });
+      addB.addEventListener('click', function() {
+         bubulleCreation();
+      });
+
+      var deleteLastB = document.querySelector('.deleteLast');
+
+      deleteLastB.addEventListener('click', function() {
+         bubulles.pop();
+      })
+
+      window.addEventListener('keydown', function(event) {
+         if (event.which === 65) {
+            for (var i = 0; i < bubulles.length; i++) {
+               bubulles[i].x = mouse.x
+               bubulles[i].y = mouse.y
+            }
+         }
+      });
+
+   </script>
+
+</body>
+
+</html>

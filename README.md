@@ -1,1 +1,1 @@
-"# JS-Training" 
+# JS-Training
