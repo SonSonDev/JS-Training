@@ -1,0 +1,269 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/reset.css">
+    <style media="screen">
+        @font-face {
+            font-family: "OpenSans";
+            src: url("fonts/OpenSans-Regular.ttf");
+        }
+
+        .back {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: red;
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+/Edge */
+            user-select: none;
+            /* Standard */
+        }
+
+        body {
+            font-family: "OpenSans";
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+
+        }
+
+        #myCanvas {
+            margin-bottom: 10px;
+            border: 1px solid black;
+        }
+
+        .message {
+            margin-bottom: 20px;
+        }
+
+        .ui {
+            width: 1024px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .startButton {
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 1px solid black;
+            background-color: white;
+            color: black;
+        }
+
+        .lifeImg {
+            width: 30px;
+        }
+
+        .lifeImg.hidden {
+            opacity: 0;
+        }
+
+        .lifeImg.fake {
+            position: absolute;
+            transition: transform 0.5s linear, opacity 0.5s linear;
+        }
+        .lifeImg.fake.animation {
+            transform: rotate(45deg) translateX(50px);
+            opacity: 0;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bubulle Game</title>
+</head>
+
+<body>
+    <div class="back"><a href="index.html">Retour</a></div>
+
+    <p class="message">Hello!!</p>
+    <div class="ui">
+        <div class="uiLife">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+            <img class="lifeImg" src="img/life.svg" alt="life">
+        </div>
+        <p class="uiPoints">0 points</p>
+    </div>
+    <canvas id="myCanvas" width="1024" height="768"></canvas>
+    <button class="startButton">Start</button>
+
+
+    <script type="text/javascript">
+        var canvas = document.querySelector("#myCanvas")
+        var ctx = canvas.getContext("2d");
+        var bubbles = [];
+
+        function rndmEx(min, max) {
+            return Math.floor((Math.random() * (max - min)) + min);
+        }
+
+        function distance(item1, item2) {
+            return Math.sqrt(Math.pow(item1.x - item2.x, 2) + Math.pow(item1.y - item2.y, 2));
+        }
+
+        var mouse = {
+            x: 0,
+            y: 0
+        }
+
+        var autoCreation;
+
+        var player = {
+            point: 0,
+            life: 10
+        }
+
+        var ui = {
+            message: document.querySelector(".message"),
+            point: document.querySelector(".uiPoints"),
+            life: document.querySelectorAll(".lifeImg"),
+            startButton: document.querySelector(".startButton")
+        }
+
+        function bubbleCreation(x, y) {
+            var newBubble = {
+                v: -0.1,
+                x: x,
+                y: y,
+                r: rndmEx(25, 40)
+            }
+            drawBubble(newBubble);
+            bubbles.push(newBubble);
+        }
+
+        function drawBubble(obj) {
+            ctx.beginPath();
+            ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.32)";
+            ctx.fill();
+            ctx.lineWidth = 0.4;
+            ctx.strokeStyle = "#000000";
+            ctx.stroke();
+        }
+
+        function clear() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // xDeb, yDeb, xFin, yFin
+        }
+
+        function display() {
+            for (var i = 0; i < bubbles.length; i++) {
+                drawBubble(bubbles[i]);
+            }
+        }
+
+        setInterval(function() {
+            if (bubbles.length > 0) {
+                clear(); //Efface le canvas
+                for (i = 0; i < bubbles.length; i++) {
+                    bubbles[i].v -= rndmEx(1, 2) / 1000
+                    bubbles[i].r += 0.005
+                    bubbles[i].y += bubbles[i].v
+                    bubbles[i].x -= rndmEx(-2, 3) / 10
+                }
+                display(); //traçage des bubulles
+                clearBubbles();
+            }
+        }, 5)
+
+        function clearBubbles() {
+            for (i = 0; i < bubbles.length; i++) {
+                if (bubbles[i].y < -bubbles[i].r) {
+                    bubbles.splice(i, 1);
+                    lostLife();
+                    if (player.life < 1) {
+                        clearInterval(autoCreation);
+                        clear();
+                        bubbles = [];
+                        ui.message.textContent = "Game Over";
+                    }
+                }
+            }
+        }
+
+        function bubbleClick() {
+            for (var i = 0; i < bubbles.length; i++) {
+                if (bubbles[i].r + 4 >= distance(bubbles[i], mouse)) {
+                    console.log(bubbles.splice(i, 1));
+                    player.point++;
+                    ui.point.textContent = player.point + " points"
+                }
+            }
+        }
+
+        function startGame() {
+            clearInterval(autoCreation);
+            for (var i = 0; i < ui.life.length; i++) {
+                ui.life[i].classList.remove('hidden');
+            }
+            player.life = 10;
+            player.point = 0;
+            ui.point.textContent = player.point + " points"
+
+            autoCreation = setInterval(function() {
+                bubbleCreation(rndmEx(25, canvas.width - 25), window.innerHeight - 5)
+            }, 600000 / window.innerWidth)
+        }
+
+        canvas.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        })
+
+        canvas.addEventListener('click', function(event) {
+            mouse.x = event.clientX - canvas.offsetLeft;
+            mouse.y = event.clientY - canvas.offsetTop;
+            bubbleClick()
+        })
+
+        ui.startButton.addEventListener('click', function() {
+            startGame();
+            ui.message.textContent = "Game Start!!";
+        });
+
+        function lostLife() {
+            lifeAnimation()
+            ui.life[player.life - 1].classList.add('hidden');
+            player.life--;
+        }
+
+        function stop(){
+            clear();
+            bubbles=[];
+            clearInterval(autoCreation);
+        }
+
+        function lifeAnimation(){
+            var fakeHeart = document.createElement('img');
+            fakeHeart.classList.add('lifeImg');
+            fakeHeart.classList.add('fake');
+            fakeHeart.src="img/life.svg"
+            fakeHeart.style.left = ui.life[player.life-1].getBoundingClientRect().left + "px";
+            fakeHeart.style.top = ui.life[player.life-1].getBoundingClientRect().top + "px";
+            body.appendChild(fakeHeart);
+            setTimeout(function () {
+                fakeHeart.classList.add('animation');
+                setTimeout(function () {
+                    fakeHeart.remove();
+                }, 1000);
+            }, 50);
+        }
+
+        var body = document.querySelector('body')
+    </script>
+
+</body>
+
+</html>

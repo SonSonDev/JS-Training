@@ -1,0 +1,199 @@
+<html>
+
+<head>
+   <style media="screen">
+      @font-face {
+         font-family: "OpenSans";
+         src: url("fonts/OpenSans-Regular.ttf");
+      }
+
+      .back {
+         position: fixed;
+         top: 10px;
+         left: 10px;
+         color: red;
+      }
+
+      body {
+         font-family: "OpenSans";
+         display: flex;
+         justify-content: center;
+         align-items: center;
+      }
+
+      .area {
+         position: relative;
+         height: 500px;
+         width: 800px;
+         border: 2px solid rgba(69, 69, 69, 0.85);
+         border-radius: 2px;
+      }
+
+      .bubulle {
+         position: absolute;
+         border-radius: 100%;
+         background-color: rgba(80, 120, 199, 0.66);
+         border: 1px solid rgb(51, 138, 218);
+         transition: top 0.1s linear, left 0.1s linear;
+         user-select: none;
+
+      }
+
+      .mouseCharge {
+         position: absolute;
+         border-radius: 100%;
+         border: 1px solid red;
+         transition: top 0.1s linear, left 0.1s linear;
+         user-select: none;
+         transform: translate(-50%, -50%);
+
+      }
+   </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Document</title>
+</head>
+
+<body>
+   <div class="back"><a href="index.html">Retour</a></div>
+
+   <section class="area"></section>
+
+   <script type="text/javascript">
+      var area = document.querySelector('.area');
+      var mouse = {
+         x: 0,
+         y: 0,
+         charge: 0.5,
+         chargeSize: 0
+      }
+
+      function rndOne() {
+         var tab = [-1, 1];
+         return tab[Math.floor(Math.random() * tab.length)];
+      }
+      var allbubulle = [];
+
+      function Bubulle(x, y, size) {
+         this.size = size;
+         this.x = x;
+         this.y = y;
+
+         this.create = function() {
+            this.newDiv = document.createElement('DIV');
+            this.newDiv.classList.add('bubulle');
+            this.newDiv.style.height = `${this.size}px`
+            this.newDiv.style.width = `${this.size}px`
+            this.newDiv.style.top = `${this.y-this.size/2}px`
+            this.newDiv.style.left = `${this.x-this.size/2}px`
+            area.appendChild(this.newDiv);
+            allbubulle.push(this);
+         }
+
+         this.attract = function() {
+            deltaX = this.x - mouse.x
+            deltaY = this.y - mouse.y
+            if (deltaX === 0 && deltaY === 0) {
+               deltaX = rndOne();
+               deltaY = rndOne();
+            }
+            if (Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) < 100) {
+               this.x -= ((1 / 2) * deltaX * this.size / Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))) + 3 * (Math.random() - Math.random());
+               this.y -= ((1 / 2) * deltaY * this.size / Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))) + 3 * (Math.random() - Math.random());
+            }
+            this.limit()
+            this.render();
+         }
+
+         this.eject = function() {
+            console.log('eject');
+            deltaX = this.x - mouse.x
+            deltaY = this.y - mouse.y
+            if (deltaX === 0 && deltaY === 0) {
+               deltaX = rndOne();
+               deltaY = rndOne();
+            }
+            if (Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) < 100) {
+               this.x += 5 * deltaX * this.size * (mouse.charge / 1.5) / Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+               this.y += 5 * deltaY * this.size * (mouse.charge / 1.5) / Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+            }
+
+            this.limit(deltaX, deltaY);
+            this.render();
+         }
+         this.limit = function(dx, dy) {
+            if (this.x <= this.size / 2) {
+               this.x = this.size / 2;
+            }
+            if (this.x >= area.clientWidth - this.size / 2) {
+               this.x = area.clientWidth - this.size / 2
+            }
+            if (this.y <= this.size / 2) {
+               this.y = this.size / 2;
+            }
+            if (this.y >= area.clientHeight - this.size / 2) {
+               this.y = area.clientHeight - this.size / 2
+            }
+         }
+         this.render = function() {
+            this.newDiv.style.top = `${this.y-this.size/2}px`
+            this.newDiv.style.left = `${this.x-this.size/2}px`
+         }
+      }
+
+      var chargeInterval;
+      // area.addEventListener('mousedown', function() {
+      //    mouse.chargeDisplay=document.createElement('div');
+      //    mouse.chargeDisplay.classList.add('mouseCharge');
+      //    area.appendChild(mouse.chargeDisplay);
+      //    mouse.chargeSize=mouse.charge*100;
+      //    mouse.chargeDisplay.style.top = `${mouse.y}px`
+      //    mouse.chargeDisplay.style.left = `${mouse.x}px`
+      //    mouse.chargeDisplay.style.height = `${mouse.chargeSize}px`
+      //    mouse.chargeDisplay.style.width = `${mouse.chargeSize}px`
+      //    chargeInterval = setInterval(function() {
+      //       mouse.charge = (mouse.charge + 0.01);
+      //       if (mouse.charge > 3) {
+      //          mouse.charge = 0.5;
+      //       }
+      //       mouse.chargeSize=mouse.charge*100;
+      //       mouse.chargeDisplay.style.top = `${mouse.y}px`
+      //       mouse.chargeDisplay.style.left = `${mouse.x}px`
+      //       mouse.chargeDisplay.style.height = `${mouse.chargeSize}px`
+      //       mouse.chargeDisplay.style.width = `${mouse.chargeSize}px`
+      //       console.log(mouse.chargeDisplay.style.top);
+      //    }, 5);
+      // });
+
+      for (var i = 0; i < 100; i++) {
+         let bulle = new Bubulle(Math.floor(Math.random() * (area.offsetWidth - 100)) + 50, Math.floor(Math.random() * (area.offsetHeight - 100)) + 50, Math.floor(Math.random() * 50 + 10))
+         bulle.create()
+
+         area.addEventListener('mousemove', event => {
+            mouse.x = Math.floor(-(window.innerWidth - area.clientWidth) / 2 + event.clientX);
+            mouse.y = Math.floor(-(window.innerHeight - area.clientHeight) / 2 + event.clientY);
+         })
+
+         window.addEventListener('mouseup', function() {
+            bulle.eject();
+            clearInterval(chargeInterval);
+            setTimeout(function() {
+               mouse.charge = 0.5;
+               mouse.chargeDisplay.remove();
+            }, 100);
+            console.log(mouse.charge);
+         })
+
+         setInterval(function() {
+            bulle.attract();
+         }, 20);
+      }
+
+      area.addEventListener('contextmenu', function(event) {
+         event.preventDefault();
+      });
+   </script>
+</body>
+
+</html>
